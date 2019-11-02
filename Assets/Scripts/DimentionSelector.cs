@@ -27,5 +27,9 @@ public class DimentionSelector : MonoBehaviour
             Height.text = a.ToString();
         }
     }
+    public void OnRest()
+    {
+        a = 0;
+    }
     
 }
