@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 public class CharecterInput : MonoBehaviour
 {
    
   
-    public Text inputFiled;
+  
     int Limit;
    
-    public InputField Cahrecter;
-    public GameObject textfield;
+    
+    public GameObject WaringObj;
     public GameObject Frame2;
     public GameObject Frame3;
     public GameObject Frame4;
@@ -22,7 +23,7 @@ public class CharecterInput : MonoBehaviour
 
 
     public Text print,CharectersInput,DictionaryInput;
-    public Text textField, CharecterFiled, height, width, dictonarySizeText,dictionaryWords,ConstraintValue;
+    public Text WarningText, CharacterFiled, height, width, dictonarySizeText,dictionaryWords,ConstraintValue;
     protected bool GoToNextFrame = false;
   
 
@@ -44,7 +45,7 @@ public class CharecterInput : MonoBehaviour
     void Start()
     {
         
-        textField.text = "! There shloud be only ";
+        WarningText.text = "! There shloud be only ";
 
         M = 0;
         N = 0;
@@ -145,23 +146,23 @@ public class CharecterInput : MonoBehaviour
         Constraint = System.Convert.ToInt32(ConstraintValue.text); ;
      //   Debug.Log(Constraint + "c");
 
-        if (CharecterFiled.text.Length != Limit) // If Board dimentions doesn't matches the number board charecters
+        if (CharacterFiled.text.Length != Limit) // If Board dimentions doesn't matches the number board charecters
         {
-            textfield.SetActive(true);
-             textField.text = "! There shloud be only " + Limit + " Charecters";
+            WaringObj.SetActive(true);
+             WarningText.text = "! There shloud be only " + Limit + " Charecters";
             
 
         }
-        else if (CharecterFiled.text.Length == 0)
+        else if (CharacterFiled.text.Length == 0)
         {
-            textField.text = "Board Can't be Empty";
-            textfield.SetActive(true);
+            WarningText.text = "Board Can't be Empty";
+            WaringObj.SetActive(true);
         }
         
         else // If Board dimentions matches the number board charecters
         {
            
-            TextToChar(CharecterFiled); 
+            TextToChar(CharacterFiled); 
          
            
             
@@ -178,8 +179,8 @@ public class CharecterInput : MonoBehaviour
     public void OnRest()
     {
 
-        CharecterFiled.text.Remove(0, CharecterFiled.text.Length);
-        textfield.SetActive(false);
+        CharacterFiled.text.Remove(0, CharacterFiled.text.Length);
+        WaringObj.SetActive(false);
         height.text = "0";
         width.text = "0";
        
@@ -335,21 +336,13 @@ public class CharecterInput : MonoBehaviour
         text= text.ToUpper();
         return text;
     }
+
+    public void OnTryAgain()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
 
 
 
 
-/*
- 
- 
- foreach (KeyValuePair<int, string> el in My)
-        {
-            int i = 0;
-            My.Add(i, str);
-            i++;
-        } 
- 
- 
- 
- */

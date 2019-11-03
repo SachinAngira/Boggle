@@ -1,15 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StartScene : MonoBehaviour
 {
-    public GameObject Canvas;
-    public GameObject frame;
+    
+   
     public void OnPlay()
     {
-        Canvas.SetActive(true);
-        frame.SetActive(false);
+        SceneManager.LoadScene(1);
     }
     public void  OnQuit()
     {
