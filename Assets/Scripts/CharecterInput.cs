@@ -16,19 +16,24 @@ public class CharecterInput : MonoBehaviour
     public GameObject Frame2;
     public GameObject Frame3;
     public GameObject Frame4;
-    public GameObject warning;
+    public GameObject Frame5;
+    public GameObject warningForDictinarySize;
+    public GameObject warningForDictinary;
 
 
-    public Text print;
-    public Text textField, CharecterFiled, height, width, dictonarySizeText,dictionaryWords;
+    public Text print,CharectersInput,DictionaryInput;
+    public Text textField, CharecterFiled, height, width, dictonarySizeText,dictionaryWords,ConstraintValue;
+  
 
-
-    public String[] dictionary;
-    public String dictionaryString;
+    protected String S1 = "";
+    protected String[] dictionary = {};
+    protected String dictionaryString;
+    protected string str2 = "";
     public char[,] boggle;
   //  int n;
     int dictonarySize;
     int N,M;
+    int Constraint = 0;
 
 
 
@@ -42,11 +47,11 @@ public class CharecterInput : MonoBehaviour
 
         M = 0;
         N = 0;
+       
+       
 
 
-
-        Console.WriteLine("Following words of " +
-                          "dictionary are present");
+        
         }
 
 
@@ -58,21 +63,66 @@ public class CharecterInput : MonoBehaviour
         try
         {
             dictonarySize = System.Convert.ToInt32(dictonarySizeText.text);
-            Debug.Log(dictonarySize);
+         //   Debug.Log(dictonarySize);
         }
         catch (Exception e)
         {
-            warning.SetActive(true);
+            warningForDictinarySize.SetActive(true);
+        }
+        if (dictionaryWords.text == "")
+        {
+            warningForDictinary.SetActive(true);
         }
         dictionaryString = dictionaryWords.text.ToString();
+        dictionaryString = ToUpper(dictionaryString);
+
+
+
+        dictionaryString += ' ';
         dictionary = dictionaryString.Split(' ');
-        Debug.Log(dictionary[0]);
+       
+      
         Frame4.SetActive(true);
         Frame3.SetActive(false);
-       findWords(boggle);
-    }
-    
 
+
+        
+
+       for (int Y = 0; Y < dictonarySize; Y++)
+        {
+            if (Y%4 ==0)
+            {
+                DictionaryInput.text += "\n";
+            }
+            DictionaryInput.text += " "+ dictionary[Y];
+        
+        } 
+
+
+
+        for (int x = 0; x < M; x++)
+        {
+            CharectersInput.text += "\n";
+            for (int j = 0; j < N; j++)
+            {
+               CharectersInput.text += " " + boggle[x, j];
+              
+            }
+        }
+       
+    }
+
+   public void Find()
+   {
+    
+       Frame5.SetActive(true);
+       Frame4.SetActive(false);
+       findWords(boggle);
+     Print();
+       
+
+
+   }
 
     
     public void OnClick()
@@ -82,6 +132,9 @@ public class CharecterInput : MonoBehaviour
         N = PlayerPrefs.GetInt("Width");
         Limit = N * M;
         Debug.Log(Limit);
+        Constraint = System.Convert.ToInt32(ConstraintValue.text); ;
+     //   Debug.Log(Constraint + "c");
+
         if (CharecterFiled.text.Length != Limit) // If Board dimentions doesn't matches the number board charecters
         {
             textfield.SetActive(true);
@@ -89,9 +142,15 @@ public class CharecterInput : MonoBehaviour
             
 
         }
-        else                        // If Board dimentions matches the number board charecters
+        else if (CharecterFiled.text.Length == 0)
         {
-            
+            textField.text = "Board Can't be Empty";
+            textfield.SetActive(true);
+        }
+        
+        else // If Board dimentions matches the number board charecters
+        {
+           
             TextToChar(CharecterFiled); 
          
            
@@ -122,27 +181,29 @@ public class CharecterInput : MonoBehaviour
 
     void TextToChar(Text CharecterFiled) // To convert the input String into multidimentional charecter array
       {
-        char[] charArray = CharecterFiled.text.ToCharArray(); ; //String to Single Dimentional charecter array
+          String st = CharecterFiled.text;
+        st = ToUpper(st);
+        char[] charArray = st.ToCharArray(); ; //String to Single Dimentional charecter array
 
 
 
 
 
-        boggle = new char[N, M];
+        boggle = new char[M, N];
         int Z = 0; //this is index to travers Single Dimentional charecter array
 
 
         //This loop converts single dimentional charecter Array into 
         //multidimentional charecter array
 
-        for (int x = 0; x < N; x++)
+        for (int x = 0; x < M; x++)
         {
 
-            for (int j = 0; j < M; j++)
+            for (int j = 0; j < N; j++)
             {
                 boggle[x, j] = charArray[Z];
                 Z++;
-                Debug.Log(x + " " + j + boggle[x, j]);
+             //   Debug.Log(x + " " + j + boggle[x, j]);
             }
         }
     }
@@ -171,9 +232,14 @@ public class CharecterInput : MonoBehaviour
         str = str + boggle[i, j];
 
         // If str is present in dictionary, 
-        // then call print function 
+        // then add to result string;
         if (searchWord(str))
-            Print(str);
+        {
+            Debug.Log(str);
+            AddToString(str);
+        }
+       
+           // AddToString(str);
           
 
         // Traverse 8 adjacent cells of boggle[i,j] 
@@ -204,14 +270,75 @@ public class CharecterInput : MonoBehaviour
                 IswordIs(boggle, visited, i, j, str);
        
     }
-    public void Print(string str) // Prints the result
+    public void Print() // Prints the result
     {
-        print.text += " " +str.ToString();
+
+        if (S1 == "")
+        {
+            S1 = "Nothing Matched !";
+        }
+        print.text = S1;
     }
+
+    public void AddToString(string str)
+    {
+
+        
+
+        for (int i = 0; i < dictonarySize; i++)
+        {
+
+            if (S1.Contains(str))
+            {
+                continue;
+            }
+            else
+            {
+                if (str.Length > Constraint)
+                {
+                    S1 += " " + str;
+                }
+            }
+        }
+        
+        }
+          
+          
+ 
+        
+    
 
     //To set warning text appear when the Dictionary Size input field is empty
     public void OnListEmpty()
     {
-        warning.SetActive(false);
+        warningForDictinarySize.SetActive(false);
+    }
+
+  
+
+
+
+    // Coverts the any String Tto uppre case
+    String ToUpper(String text) 
+    {
+        text= text.ToUpper();
+        return text;
     }
 }
+
+
+
+
+/*
+ 
+ 
+ foreach (KeyValuePair<int, string> el in My)
+        {
+            int i = 0;
+            My.Add(i, str);
+            i++;
+        } 
+ 
+ 
+ 
+ */
