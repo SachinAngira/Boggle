@@ -6,22 +6,28 @@ using System;
 
 public class CharecterInput : MonoBehaviour
 {
-    char[,] Charecters;
+   
   
     public Text inputFiled;
     int Limit;
-    public GameObject textfield;
+   
     public InputField Cahrecter;
-    public Text textField, CharecterFiled, height, width;
+    public GameObject textfield;
     public GameObject Frame2;
+    public GameObject Frame3;
     public GameObject Frame4;
+    public GameObject warning;
+
+
     public Text print;
+    public Text textField, CharecterFiled, height, width, dictonarySizeText,dictionaryWords;
 
 
-    public String[] dictionary = { "LOB", "TUX", "SEA", "FAM" };
-
+    public String[] dictionary;
+    public String dictionaryString;
     public char[,] boggle;
-    int n = 4;
+  //  int n;
+    int dictonarySize;
     int N,M;
 
 
@@ -31,25 +37,39 @@ public class CharecterInput : MonoBehaviour
 
     void Start()
     {
-
+        
         textField.text = "! There shloud be only ";
 
-        M = PlayerPrefs.GetInt("Height");
-        N = PlayerPrefs.GetInt("Width");
+        M = 0;
+        N = 0;
 
 
 
         Console.WriteLine("Following words of " +
                           "dictionary are present");
-       
+        }
 
 
 
-    }
+
     //this function is going to be updated
    public void DictinoryRead()
     {
-        findWords(boggle);
+        try
+        {
+            dictonarySize = System.Convert.ToInt32(dictonarySizeText.text);
+            Debug.Log(dictonarySize);
+        }
+        catch (Exception e)
+        {
+            warning.SetActive(true);
+        }
+        dictionaryString = dictionaryWords.text.ToString();
+        dictionary = dictionaryString.Split(' ');
+        Debug.Log(dictionary[0]);
+        Frame4.SetActive(true);
+        Frame3.SetActive(false);
+       findWords(boggle);
     }
     
 
@@ -57,14 +77,16 @@ public class CharecterInput : MonoBehaviour
     
     public void OnClick()
     {
-        
+        // Calculates boardDimentions from playerfrebs
+        M = PlayerPrefs.GetInt("Height");
+        N = PlayerPrefs.GetInt("Width");
         Limit = N * M;
         Debug.Log(Limit);
-        if (CharecterFiled.text.Length > Limit || CharecterFiled.text.Length < Limit) // If Board dimentions doesn't matches the number board charecters
+        if (CharecterFiled.text.Length != Limit) // If Board dimentions doesn't matches the number board charecters
         {
             textfield.SetActive(true);
             textField.text += Limit + " Charecters";
-            Frame4.gameObject.SetActive(true);
+            
 
         }
         else                        // If Board dimentions matches the number board charecters
@@ -75,10 +97,13 @@ public class CharecterInput : MonoBehaviour
            
             
             Frame2.SetActive(false);
-            Frame4.SetActive(true);
+            Frame3.SetActive(true);
            
         }
     }
+
+
+
     //Resets all the input Fields from Frame2
     public void OnRest()
     {
@@ -90,6 +115,11 @@ public class CharecterInput : MonoBehaviour
         textField.text = "! There shloud be only ";
 
     }
+
+
+
+
+
     void TextToChar(Text CharecterFiled) // To convert the input String into multidimentional charecter array
       {
         char[] charArray = CharecterFiled.text.ToCharArray(); ; //String to Single Dimentional charecter array
@@ -117,15 +147,15 @@ public class CharecterInput : MonoBehaviour
         }
     }
 
-       
 
 
 
-    
+
+    // Searches for the word
     bool searchWord(String str)
     {
-        // Searches for the word
-        for (int i = 0; i < n; i++)
+       
+        for (int i = 0; i < dictonarySize; i++)
             if (str.Equals(dictionary[i]))
                 return true;
         return false;
@@ -141,7 +171,7 @@ public class CharecterInput : MonoBehaviour
         str = str + boggle[i, j];
 
         // If str is present in dictionary, 
-        // then print it 
+        // then call print function 
         if (searchWord(str))
             Print(str);
           
@@ -179,4 +209,9 @@ public class CharecterInput : MonoBehaviour
         print.text += " " +str.ToString();
     }
 
+    //To set warning text appear when the Dictionary Size input field is empty
+    public void OnListEmpty()
+    {
+        warning.SetActive(false);
+    }
 }
