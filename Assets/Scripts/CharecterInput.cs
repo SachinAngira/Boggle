@@ -23,6 +23,7 @@ public class CharecterInput : MonoBehaviour
 
     public Text print,CharectersInput,DictionaryInput;
     public Text textField, CharecterFiled, height, width, dictonarySizeText,dictionaryWords,ConstraintValue;
+    protected bool GoToNextFrame = false;
   
 
     protected String S1 = "";
@@ -80,24 +81,28 @@ public class CharecterInput : MonoBehaviour
 
         dictionaryString += ' ';
         dictionary = dictionaryString.Split(' ');
-       
-      
-        Frame4.SetActive(true);
-        Frame3.SetActive(false);
 
 
-        
 
-       for (int Y = 0; Y < dictonarySize; Y++)
+        GoToNextFrame = true;
+
+
+       try
         {
-            if (Y%4 ==0)
+            for (int Y = 0; Y < dictonarySize; Y++)
             {
-                DictionaryInput.text += "\n";
+                if (Y % 4 == 0)
+                {
+                    DictionaryInput.text += "\n";
+                }
+                DictionaryInput.text += " " + dictionary[Y];
             }
-            DictionaryInput.text += " "+ dictionary[Y];
-        
-        } 
-
+        }
+        catch {
+            warningForDictinary.SetActive(true);
+            GoToNextFrame = false;
+        }
+      
 
 
         for (int x = 0; x < M; x++)
@@ -108,6 +113,11 @@ public class CharecterInput : MonoBehaviour
                CharectersInput.text += " " + boggle[x, j];
               
             }
+        }
+        if (GoToNextFrame == true)
+        {
+            Frame4.SetActive(true);
+            Frame3.SetActive(false);
         }
        
     }
@@ -138,7 +148,7 @@ public class CharecterInput : MonoBehaviour
         if (CharecterFiled.text.Length != Limit) // If Board dimentions doesn't matches the number board charecters
         {
             textfield.SetActive(true);
-            textField.text += Limit + " Charecters";
+             textField.text = "! There shloud be only " + Limit + " Charecters";
             
 
         }
@@ -157,6 +167,7 @@ public class CharecterInput : MonoBehaviour
             
             Frame2.SetActive(false);
             Frame3.SetActive(true);
+            warningForDictinary.SetActive(false);
            
         }
     }
@@ -171,7 +182,7 @@ public class CharecterInput : MonoBehaviour
         textfield.SetActive(false);
         height.text = "0";
         width.text = "0";
-        textField.text = "! There shloud be only ";
+       
 
     }
 
